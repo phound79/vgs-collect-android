@@ -27,6 +27,13 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven {
+            url "https://bouncerpaid.bintray.com/cardverify-ui-android"
+            credentials {
+                username "dmytro.khludkov@vgs.io"
+                password "i4YLM6H1q1LD_W7dzYOZY90WIVPzLmn_"
+            }
+        }
     }
 }
 
