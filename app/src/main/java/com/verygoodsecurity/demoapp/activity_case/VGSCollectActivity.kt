@@ -11,7 +11,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.verygoodsecurity.api.cardio.ScanActivity
+import com.verygoodsecurity.api.bouncer.ScanActivity
 import com.verygoodsecurity.demoapp.R
 import com.verygoodsecurity.demoapp.StartActivity
 import com.verygoodsecurity.vgscollect.VGSCollectLogger
@@ -258,6 +258,7 @@ class VGSCollectActivity: AppCompatActivity(), VgsCollectResponseListener, View.
         }
 
         intent.putExtra(ScanActivity.SCAN_CONFIGURATION, scanSettings)
+        intent.putExtra(ScanActivity.API_KEY, "i4YLM6H1q1LD_W7dzYOZY90WIVPzLmn_")
 
         startActivityForResult(intent, USER_SCAN_REQUEST_CODE)
     }

@@ -4,16 +4,17 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import com.getbouncer.cardscan.ui.CardScanActivity
-import com.getbouncer.cardscan.ui.CardScanActivityResult
-import com.getbouncer.cardscan.ui.CardScanActivityResultHandler
+//import com.getbouncer.cardscan.ui.CardScanActivity
+//import com.getbouncer.cardscan.ui.CardScanActivityResult
+//import com.getbouncer.cardscan.ui.CardScanActivityResultHandler
+import com.getbouncer.cardverify.ui.local.CardVerifyActivity
 import com.getbouncer.scan.framework.exception.InvalidBouncerApiKeyException
 import com.verygoodsecurity.vgscollect.BuildConfig
 import com.verygoodsecurity.vgscollect.app.BaseTransmitActivity
 import java.text.SimpleDateFormat
 import java.util.*
 
-class ScanActivity : BaseTransmitActivity(), CardScanActivityResultHandler {
+class ScanActivity : BaseTransmitActivity() {
 
     private lateinit var key: String
 
@@ -34,7 +35,9 @@ class ScanActivity : BaseTransmitActivity(), CardScanActivityResultHandler {
 
         try {
             val initializeNameAndExpiryExtraction = enableNameExtraction || enableExpiryExtraction
-            CardScanActivity.warmUp(this, key, initializeNameAndExpiryExtraction)
+//            CardScanActivity.warmUp(this, key, initializeNameAndExpiryExtraction)
+            Log.d("Test", key)
+            CardVerifyActivity.warmUp(this, key, initializeNameAndExpiryExtraction)
         } catch (e: InvalidBouncerApiKeyException) {
             printLog(e)
             finish()
@@ -63,92 +66,94 @@ class ScanActivity : BaseTransmitActivity(), CardScanActivityResultHandler {
     }
 
     private fun runCardIO() {
-        CardScanActivity.start(
+        Log.d("Test", "runCardIO")
+        CardVerifyActivity.start(
             this,
-            key,
+            "535129",
+            "1154",
             enableEnterCardManually,
             enableExpiryExtraction,
             enableNameExtraction
         )
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        CardScanActivity.parseScanResult(resultCode, data, this)
-        finish()
-    }
-
-    override fun analyzerFailure(scanId: String?) {}
-
-    override fun cameraError(scanId: String?) {
-        addAnalyticInfo(scanId, Status.FAILED)
-        setResult(Activity.RESULT_OK, resultIntent)
-    }
-
-    override fun canceledUnknown(scanId: String?) {
-        addAnalyticInfo(scanId, Status.FAILED)
-        setResult(Activity.RESULT_OK, resultIntent)
-    }
-
-    override fun enterManually(scanId: String?) {}
-
-    override fun userCanceled(scanId: String?) {
-        addAnalyticInfo(scanId, Status.CLOSE)
-        setResult(Activity.RESULT_OK, resultIntent)
-    }
-
-    override fun cardScanned(scanId: String?, scanResult: CardScanActivityResult) {
-        settings.forEach {
-            when (it.value) {
-                CARD_NUMBER -> mapData(it.key, scanResult.pan)
-                CARD_CVC -> mapData(it.key, scanResult.cvc)
-                CARD_HOLDER -> mapData(it.key, scanResult.cardholderName)
-                CARD_EXP_DATE -> mapData(it.key, retrieveDate(scanResult))
-            }
-        }
-
-        addAnalyticInfo(scanId, Status.SUCCESS)
-    }
-
-    private fun retrieveDate(scanResult: CardScanActivityResult): Long? {
-        val day: Int
-        val mounts: Int
-        val year: Int
-
-        scanResult.also {
-            day = it.expiryDay?.toIntOrNull() ?: 0
-        }.also {
-            mounts = it.expiryMonth?.toIntOrNull() ?: 0
-        }.also {
-            year = it.expiryYear?.toIntOrNull() ?: 0
-        }
-
-        return if (mounts != 0 && year != 0) {
-            val dStr: String
-            val dMask: String
-            if (day != 0) {
-                dStr = String.format("%02d", day) + "/"
-                dMask = day.toString().replace("\\d".toRegex(), "d") + "/"
-            } else {
-                dStr = ""
-                dMask = ""
-            }
-
-            val mMask = String.format("%02d", mounts)
-                .replace("\\d".toRegex(), "M") + "/"
-
-            val yMask = mounts.toString()
-                .replace("\\d".toRegex(), "y")
-
-            val mStr = String.format("%02d", mounts) + "/"
-            val yStr = year.toString()
-            val date = SimpleDateFormat("$dMask$mMask$yMask", Locale.getDefault())
-                .parse("$dStr$mStr$yStr")
-            date?.time
-        } else {
-            null
-        }
-    }
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//        CardScanActivity.parseScanResult(resultCode, data, this)
+//        finish()
+//    }
+//
+//    override fun analyzerFailure(scanId: String?) {}
+//
+//    override fun cameraError(scanId: String?) {
+//        addAnalyticInfo(scanId, Status.FAILED)
+//        setResult(Activity.RESULT_OK, resultIntent)
+//    }
+//
+//    override fun canceledUnknown(scanId: String?) {
+//        addAnalyticInfo(scanId, Status.FAILED)
+//        setResult(Activity.RESULT_OK, resultIntent)
+//    }
+//
+//    override fun enterManually(scanId: String?) {}
+//
+//    override fun userCanceled(scanId: String?) {
+//        addAnalyticInfo(scanId, Status.CLOSE)
+//        setResult(Activity.RESULT_OK, resultIntent)
+//    }
+//
+//    override fun cardScanned(scanId: String?, scanResult: CardScanActivityResult) {
+//        settings.forEach {
+//            when (it.value) {
+//                CARD_NUMBER -> mapData(it.key, scanResult.pan)
+//                CARD_CVC -> mapData(it.key, scanResult.cvc)
+//                CARD_HOLDER -> mapData(it.key, scanResult.cardholderName)
+//                CARD_EXP_DATE -> mapData(it.key, retrieveDate(scanResult))
+//            }
+//        }
+//
+//        addAnalyticInfo(scanId, Status.SUCCESS)
+//    }
+//
+//    private fun retrieveDate(scanResult: CardScanActivityResult): Long? {
+//        val day: Int
+//        val mounts: Int
+//        val year: Int
+//
+//        scanResult.also {
+//            day = it.expiryDay?.toIntOrNull() ?: 0
+//        }.also {
+//            mounts = it.expiryMonth?.toIntOrNull() ?: 0
+//        }.also {
+//            year = it.expiryYear?.toIntOrNull() ?: 0
+//        }
+//
+//        return if (mounts != 0 && year != 0) {
+//            val dStr: String
+//            val dMask: String
+//            if (day != 0) {
+//                dStr = String.format("%02d", day) + "/"
+//                dMask = day.toString().replace("\\d".toRegex(), "d") + "/"
+//            } else {
+//                dStr = ""
+//                dMask = ""
+//            }
+//
+//            val mMask = String.format("%02d", mounts)
+//                .replace("\\d".toRegex(), "M") + "/"
+//
+//            val yMask = mounts.toString()
+//                .replace("\\d".toRegex(), "y")
+//
+//            val mStr = String.format("%02d", mounts) + "/"
+//            val yStr = year.toString()
+//            val date = SimpleDateFormat("$dMask$mMask$yMask", Locale.getDefault())
+//                .parse("$dStr$mStr$yStr")
+//            date?.time
+//        } else {
+//            null
+//        }
+//    }
 
     private fun addAnalyticInfo(scanId: String?, status: Status) {
         mapData(RESULT_TYPE, SCAN)
