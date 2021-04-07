@@ -131,7 +131,7 @@
                                     android:layout_height="wrap_content"
                                     app:hintEnabled="true"
                                     app:hint="@string/card_number"
-                                    app:boxBackgroundModes="outline">
+                                    app:boxBackgroundModes="filled">
                                     <com.verygoodsecurity.vgscollect.widget.VGSCardNumberEditText
                                         android:id="@+id/cardNumberField"
                                         android:layout_width="match_parent"
